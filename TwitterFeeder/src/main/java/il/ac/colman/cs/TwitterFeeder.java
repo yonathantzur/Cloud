@@ -8,17 +8,18 @@ public class TwitterFeeder {
     // Create configuration and set twitter auth access tokens.
     ConfigurationBuilder cb = new ConfigurationBuilder();
     cb.setDebugEnabled(true)
-        .setOAuthConsumerKey("J1OAPrEmfcVBmlxhJ2mU6jC2j")
-        .setOAuthConsumerSecret("0LEXcpoqWlNnYGaLSi4dsNVa5uPDvpertZ7PaqX28H1cKhUuH2")
-        .setOAuthAccessToken("1036263641132294144-izWyYYAnOFRqWq8mZGM11bsSV8YJ6K")
-        .setOAuthAccessTokenSecret("1IswirWEDHM4GRP6NN3qqpckCD4SYs5z26aMmhZLKPN0y");
+        .setOAuthConsumerKey(System.getenv("TWITTER_API_KEY"))
+        .setOAuthConsumerSecret(System.getenv("TWITTER_API_SECRET_KEY"))
+        .setOAuthAccessToken(System.getenv("TWITTER_ACCESS_TOKEN"))
+        .setOAuthAccessTokenSecret(System.getenv("TWITTER_ACCESS_TOKEN_SECRET"));
 
-    // Create our Twitter stream
+    // Create twitter stream.
     TwitterStreamFactory tf = new TwitterStreamFactory(cb.build());
     TwitterStream twitterStream = tf.getInstance();
 
     twitterStream.addListener(new StatusListener());
 
+    // Create twitter tweets filter.
     FilterQuery tweetFilterQuery = new FilterQuery();
     tweetFilterQuery.track(new String[]{"apple"});
 

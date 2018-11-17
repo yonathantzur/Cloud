@@ -14,20 +14,16 @@ public class StatusListener implements twitter4j.StatusListener {
 
             if(urls.length > 0)
             {
-                System.out.println(status.getText());
-//                System.out.println(status.getId());
-//                System.out.println(status.getCreatedAt());
-//                System.out.println(status.getURLEntities()[0]);
-//                System.out.println(status.getURLEntities()[0].getText());
+                System.out.println("--------------------------------------------------");
+                System.out.println("ID: " + status.getId());
+                System.out.println("TEXT: " + status.getText());
+                System.out.println("DATE: " + status.getCreatedAt());
 
+                // Running on all tweet links.
+                int urlIndex = 1;
                 for(URLEntity url : urls)
                 {
-//                    System.out.println(url.getText());
-                    System.out.println(url.getExpandedURL());
-//                    System.out.println(url.getDisplayURL());
-//                    System.out.println(url.getEnd());
-//                    System.out.println(url.getStart());
-//                    System.out.println(url.getURL());
+                    System.out.println("LINK " + urlIndex++ + ": " + url.getExpandedURL());
                 }
 
                 System.out.println("--------------------------------------------------");
