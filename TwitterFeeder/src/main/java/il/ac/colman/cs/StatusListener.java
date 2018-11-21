@@ -24,23 +24,16 @@ public class StatusListener implements twitter4j.StatusListener {
 
             if(urls.length > 0)
             {
-//                System.out.println("--------------------------------------------------");
-//                System.out.println("ID: " + status.getId());
-//                System.out.println("TEXT: " + status.getText());
-//                System.out.println("DATE: " + status.getCreatedAt());
-//
-//               // Running on all tweet links.
+                // Running on all tweet links.
                 for(URLEntity url : urls)
                 {
                     String link = url.getExpandedURL();
                     String title = webHandler.getWebTitle(link);
                     String content = webHandler.getWebContent(link);
 
-                    try {
-                        dal.InsertWebsite(link, status.getId(), title, content, status.getCreatedAt());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                    dal.InsertWebsite(link, status.getId(), title, content, status.getCreatedAt());
+//                    dal.PrintDBToConsole();
+//                    System.exit(-1);
                 }
             }
         }

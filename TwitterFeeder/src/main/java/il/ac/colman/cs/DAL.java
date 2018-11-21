@@ -18,17 +18,22 @@ public class DAL {
         CloseConnection();
     }
 
-    public void InsertWebsite(String link, Long tweetId, String title, String content, Date date) throws SQLException {
-        OpenConnection();
-        String sql = "insert into websites(link, tweetId, title, content, tms) values(?,?,?,?,?)";
-        PreparedStatement pstmt = connection.prepareStatement(sql);
+    public void InsertWebsite(String link, Long tweetId, String title, String content, Date date) {
+        try {
+            OpenConnection();
+            String sql = "insert into websites(link, tweetId, title, content, tms) values(?,?,?,?,?)";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setString(1, link);
             pstmt.setLong(2, tweetId);
             pstmt.setString(3, title);
             pstmt.setString(4, content);
             pstmt.setDate(5, new java.sql.Date(date.getTime()));
             pstmt.executeUpdate();
-        CloseConnection();
+            CloseConnection();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void OpenConnection() throws SQLException {
@@ -46,16 +51,33 @@ public class DAL {
         }
         catch(SQLException e)
         {
-            // connection close failed.
-            System.err.println(e);
+            e.printStackTrace();
+        }
+    }
+
+    public void PrintDBToConsole() {
+        try {
+            OpenConnection();
+            ResultSet rs = statement.executeQuery("select * from websites");
+
+            System.out.println("\n\n\n----------------------Websites-----------------\n");
+            while(rs.next())
+            {
+                System.out.println("*********************************************");
+                // read the result set
+                System.out.println("link = " + rs.getString("link"));
+                System.out.println("tweet Id = " + rs.getLong("tweetId"));
+                System.out.println("title = " + rs.getString("title"));
+                System.out.println("content = " + rs.getString("content"));
+                System.out.println("timestamp = " + rs.getDate("tms"));
+                System.out.println("*********************************************");
+            }
+            System.out.println("\n----------------------Websites-----------------");
+
+            CloseConnection();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
-
-//        ResultSet rs = statement.executeQuery("select * from websites");
-//        while(rs.next())
-//        {
-//            // read the result set
-//            System.out.println("name = " + rs.getString("name"));
-//            System.out.println("id = " + rs.getInt("id"));
-//        }
