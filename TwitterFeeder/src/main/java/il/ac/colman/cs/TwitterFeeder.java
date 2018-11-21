@@ -3,12 +3,13 @@ package il.ac.colman.cs;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class TwitterFeeder {
-  public static void main(String[] args) throws SQLException {
+  public static void main(String[] args) throws Exception {
+      // load the sqlite-JDBC driver using the current class loader
+      Class.forName("org.sqlite.JDBC");
+
     // Create configuration and set twitter auth access tokens.
     ConfigurationBuilder cb = new ConfigurationBuilder();
     cb.setDebugEnabled(true)
@@ -29,6 +30,6 @@ public class TwitterFeeder {
 
     twitterStream.filter(tweetFilterQuery);
 
-    Connection connection = DriverManager.getConnection("jdbc:sqlite:C:/sqlite/TwitterFeeder.db");
+
   }
 }
