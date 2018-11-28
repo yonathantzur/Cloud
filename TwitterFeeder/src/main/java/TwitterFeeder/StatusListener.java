@@ -1,11 +1,10 @@
-package il.ac.colman.cs;
+package TwitterFeeder;
 
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.URLEntity;
 
-import javax.print.DocFlavor;
 import java.sql.SQLException;
 
 public class StatusListener implements twitter4j.StatusListener {

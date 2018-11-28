@@ -1,9 +1,7 @@
-package il.ac.colman.cs;
+package TwitterFeeder;
 
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
-
-import java.sql.*;
 
 public class TwitterFeeder {
   public static void main(String[] args) throws Exception {

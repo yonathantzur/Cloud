@@ -1,4 +1,4 @@
-package il.ac.colman.cs;
+package TwitterFeeder;
 
 import org.jsoup.Jsoup;
 import java.io.IOException;

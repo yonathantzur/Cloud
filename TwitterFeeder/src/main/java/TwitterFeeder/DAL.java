@@ -1,4 +1,5 @@
-package il.ac.colman.cs;
+package TwitterFeeder;
+
 import java.sql.*;
 import java.util.Date;
 
