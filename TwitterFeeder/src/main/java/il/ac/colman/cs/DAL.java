@@ -14,20 +14,21 @@ public class DAL {
     public void InitDB() throws SQLException {
         OpenConnection();
         statement.executeUpdate("drop table if exists websites");
-        statement.executeUpdate("create table websites (id INTEGER PRIMARY KEY AUTOINCREMENT, link STRING, tweetId LONG, title STRING, content STRING, tms DATE )");
+        statement.executeUpdate("create table websites (id INTEGER PRIMARY KEY AUTOINCREMENT, link STRING, tweetId LONG, title STRING, content STRING, tms DATE, screenshot STRING )");
         CloseConnection();
     }
 
-    public void InsertWebsite(String link, Long tweetId, String title, String content, Date date) {
+    public void InsertWebsite(String link, Long tweetId, String title, String content, Date date, String screenshot) {
         try {
             OpenConnection();
-            String sql = "insert into websites(link, tweetId, title, content, tms) values(?,?,?,?,?)";
+            String sql = "insert into websites(link, tweetId, title, content, tms, screenshot) values(?,?,?,?,?,?)";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setString(1, link);
             pstmt.setLong(2, tweetId);
             pstmt.setString(3, title);
             pstmt.setString(4, content);
             pstmt.setDate(5, new java.sql.Date(date.getTime()));
+            pstmt.setString(6, screenshot);
             pstmt.executeUpdate();
             CloseConnection();
         }
