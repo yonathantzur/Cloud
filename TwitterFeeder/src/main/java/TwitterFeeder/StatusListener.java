@@ -30,7 +30,7 @@ public class StatusListener implements twitter4j.StatusListener {
                     String title = webHandler.getWebTitle(link);
                     String content = webHandler.getWebContent(link);
 
-                    dal.InsertWebsite(link, status.getId(), title, content, status.getCreatedAt(), Screenshot.take(link));
+                    dal.InsertWebsite(link, status.getId(), title, content, status.getCreatedAt(), ScreenshotHandler.take(link));
 //                    dal.PrintDBToConsole();
 //                    System.exit(-1);
                 }

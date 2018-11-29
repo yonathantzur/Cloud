@@ -3,10 +3,10 @@ package TwitterFeeder;
 import java.io.File;
 import java.util.UUID;
 
-public class Screenshot {
+public class ScreenshotHandler {
     static String take(String url) {
         UUID uuid = UUID.randomUUID();
-        String screenshotJs = new File("screenshot", "screenshot.js").toString();
+        String screenshotJs = new File("screenshotNode", "screenshot.js").toString();
         String filename = new File("screenshots", uuid.toString() + ".png").toString();
 
         String[] cmd = {"node", screenshotJs, url, filename};

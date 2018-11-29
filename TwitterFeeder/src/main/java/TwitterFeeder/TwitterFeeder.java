@@ -5,7 +5,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterFeeder {
   public static void main(String[] args) throws Exception {
-      // load the sqlite-JDBC driver using the current class loader
+      // Load the sqlite-JDBC driver using the current class loader
       Class.forName("org.sqlite.JDBC");
 
     // Create configuration and set twitter auth access tokens.
@@ -24,7 +24,7 @@ public class TwitterFeeder {
 
     // Create twitter tweets filter.
     FilterQuery tweetFilterQuery = new FilterQuery();
-    tweetFilterQuery.track(new String[]{"apple"});
+    tweetFilterQuery.track(new String[]{"trump", "apple"});
 
     twitterStream.filter(tweetFilterQuery);
 
