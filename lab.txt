@@ -1,8 +1,1 @@
-1.listen to twitter stream and exract links
-2.use only tweets with links in then
-3.extract website content in the links
-4.insert result into database:
-	-body
-	-title
-	-timestamp
-	-tweet id
+connect -ssh -i <pem-path> <public-dns>
