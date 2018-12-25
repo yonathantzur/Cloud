@@ -1,1 +1,0 @@
-connect -ssh -i <pem-path> <public-dns>
