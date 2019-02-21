@@ -28,13 +28,17 @@ public class LinkListener {
         request.setWaitTimeSeconds(5);
         request.setVisibilityTimeout(1);
 
+        ExtractedLink linkObj;
+        ReceiveMessageResult result;
+        JSONObject dataJson;
+
         while (true) {
-            ReceiveMessageResult result = client.receiveMessage(request);
+            result = client.receiveMessage(request);
 
             for (Message message : result.getMessages()) {
-                JSONObject dataJson = new JSONObject(message.getBody());
+                dataJson = new JSONObject(message.getBody());
 
-                ExtractedLink linkObj = linkExtractor.extractContent(dataJson.get("link").toString());
+                linkObj = linkExtractor.extractContent(dataJson.get("link").toString());
 
                 dataStorage.addLink(linkObj, dataJson.get("track").toString());
 

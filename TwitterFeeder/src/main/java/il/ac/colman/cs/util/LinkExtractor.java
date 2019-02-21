@@ -3,27 +3,23 @@ package il.ac.colman.cs.util;
 import il.ac.colman.cs.ExtractedLink;
 import org.jsoup.Jsoup;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Extract content from links
  */
 public class LinkExtractor {
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public ExtractedLink extractContent(String url) {
-    /*
-    Use JSoup to extract the text, title and description from the URL.
-
-    Extract the page's content, without the HTML tags.
-    Extract the title from title tag or meta tags, prefer the meta title tags.
-    Extract the description the same as you would the title.
-
-    For title and description tags, if there are multiple (which is usually the case)
-    take the first.
-     */
-
         return new ExtractedLink(url,
-                this.getWebContent(url),
                 this.getWebTitle(url),
+                this.getWebContent(url),
                 this.getWebDescription(url),
-                ScreenshotGenerator.takeScreenshot(url));
+                format.format(new Date()),
+                ScreenshotGenerator.takeScreenshot(url),
+                System.getProperty("track"));
     }
 
     private String getWebContent(String url) {

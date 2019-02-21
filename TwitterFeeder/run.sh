@@ -8,8 +8,8 @@
 # ./run.sh TwitterListener
 
 # Configure AWS environment variable for SDK API
-export AWS_ACCESS_KEY_ID=AKIAIQ4DLH2S3GLWDMBA
-export AWS_SECRET_ACCESS_KEY=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
+export AWS_ACCESS_KEY_ID=AKIAJTFZ4PRBLK4QGNSA
+export AWS_SECRET_ACCESS_KEY=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
 export AWS_REGION=us-east-1
 
 # Run the java program with different main as user provided
@@ -21,6 +21,6 @@ nohup java -cp TwitterFeeder-1.0-SNAPSHOT-jar-with-dependencies.jar \
     -DTWITTER_ACCESS_TOKEN_SECRET=5q3VYKMZbMH8EPy4Ao5eaiZHoSbHUZBvMJysElNGalwXm \
     -Dmax_links=1000 \
     -Dtrack=apple \
-    -Dqueue_url="https://sqs.us-east-1.amazonaws.com/135062767808/Yonathan" \
+    -Dqueue_url="https://sqs.us-east-1.amazonaws.com/135062767808/yonof" \
     -Ddb_connection="jdbc:mysql://yonof.cwn8zwzjkufz.us-east-1.rds.amazonaws.com:3306/yonof?user=yonof&password=Aa123456" \
     il.ac.colman.cs.$1 &

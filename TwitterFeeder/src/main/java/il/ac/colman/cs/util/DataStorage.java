@@ -3,8 +3,7 @@ package il.ac.colman.cs.util;
 import il.ac.colman.cs.ExtractedLink;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +12,6 @@ import java.util.List;
 public class DataStorage {
     Connection conn;
     Statement statement;
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public DataStorage() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -47,7 +45,7 @@ public class DataStorage {
         pstmt.setString(2, link.getTitle());
         pstmt.setString(3, link.getContent());
         pstmt.setString(4, link.getDescription());
-        pstmt.setString(5, format.format(new Date()));
+        pstmt.setString(5, link.getTimestamp());
         pstmt.setString(6, link.getScreenshotURL());
         pstmt.setString(7, track);
         pstmt.executeUpdate();
@@ -58,11 +56,40 @@ public class DataStorage {
      *
      * @param query The query to search
      */
-    public List<ExtractedLink> search(String query) {
-    /*
-    Search for query in the database and return the results
-     */
+    public List<ExtractedLink> search(String query) throws SQLException {
+        List<ExtractedLink> result = new ArrayList<ExtractedLink>();
 
-        return null;
+        String searchQuery = "SELECT * FROM websites WHERE " +
+                "url LIKE '%?%' OR " +
+                "title LIKE '%?%' OR  " +
+                "content LIKE '%?%' OR " +
+                "description LIKE '%?%'";
+        searchQuery = searchQuery.replace("?", query);
+
+        ResultSet queryResult = conn.prepareStatement(searchQuery).executeQuery();
+
+        while (queryResult.next()) {
+            result.add(new ExtractedLink(
+                    queryResult.getString(2), // url
+                    queryResult.getString(3), // title
+                    getShortContent(queryResult.getString(4)), // content
+                    queryResult.getString(5), // description
+                    queryResult.getString(6), // timestamp
+                    queryResult.getString(7), // screenshotURL
+                    queryResult.getString(8))); // track
+        }
+
+        return result;
+    }
+
+    public static String getShortContent(String content)
+    {
+        int maxLength = 5;
+
+        if (content != null && content.length() > maxLength) {
+            content = content.substring(0, maxLength + 1) + "...";
+        }
+
+        return content;
     }
 }

@@ -6,7 +6,6 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,9 +14,6 @@ import java.util.List;
 
 public class SearchResultsServer extends AbstractHandler {
     public static void main(String[] args) throws Exception {
-        // Connect to the database
-        DataStorage dataStorage = new DataStorage();
-
         // Start the http server on port 8080
         Server server = new Server(8080);
 
@@ -33,7 +29,7 @@ public class SearchResultsServer extends AbstractHandler {
         storage = new DataStorage();
     }
 
-    public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
+    public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
         // Set the content type to JSON
         httpServletResponse.setContentType("application/json;charset=UTF-8");
 
@@ -41,7 +37,19 @@ public class SearchResultsServer extends AbstractHandler {
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
 
         // Build data from request
-        List<ExtractedLink> results = storage.search(httpServletRequest.getParameter("query"));
+        List<ExtractedLink> results = null;
+
+        try {
+            String searchQuery = httpServletRequest.getParameter("query");
+
+            if (searchQuery == null) {
+                searchQuery = "";
+            }
+
+            results = storage.search(searchQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         // Notify that this request was handled
         request.setHandled(true);
