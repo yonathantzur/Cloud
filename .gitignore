@@ -32,3 +32,5 @@ node_modules
 *.pem
 
 docs
+
+TwitterFeeder/target
