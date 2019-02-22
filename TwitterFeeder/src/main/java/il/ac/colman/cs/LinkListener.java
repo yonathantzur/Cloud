@@ -25,8 +25,8 @@ public class LinkListener {
         String queueUrl = System.getProperty("queue_url");
 
         ReceiveMessageRequest request = new ReceiveMessageRequest(queueUrl);
-        request.setWaitTimeSeconds(5);
-        request.setVisibilityTimeout(1);
+        //request.setWaitTimeSeconds(5);
+        //request.setVisibilityTimeout(1);
 
         ExtractedLink linkObj;
         ReceiveMessageResult result;

@@ -33,7 +33,7 @@ public class DataStorage {
         }
 
         // Delete the oldest link in case the DB is on max limit.
-        if (linksAmount > Integer.parseInt(System.getProperty("max_links"))) {
+        if (linksAmount >= Integer.parseInt(System.getProperty("max_links"))) {
             String deleteOldestQuery = "DELETE FROM websites ORDER BY tms ASC LIMIT 1";
             conn.prepareStatement(deleteOldestQuery).executeUpdate();
         }
@@ -59,11 +59,7 @@ public class DataStorage {
     public List<ExtractedLink> search(String query) throws SQLException {
         List<ExtractedLink> result = new ArrayList<ExtractedLink>();
 
-        String searchQuery = "SELECT * FROM websites WHERE " +
-                "url LIKE '%?%' OR " +
-                "title LIKE '%?%' OR  " +
-                "content LIKE '%?%' OR " +
-                "description LIKE '%?%'";
+        String searchQuery = "SELECT * FROM websites WHERE title LIKE '%?%'";
         searchQuery = searchQuery.replace("?", query);
 
         ResultSet queryResult = conn.prepareStatement(searchQuery).executeQuery();
@@ -84,7 +80,7 @@ public class DataStorage {
 
     public static String getShortContent(String content)
     {
-        int maxLength = 5;
+        int maxLength = 100;
 
         if (content != null && content.length() > maxLength) {
             content = content.substring(0, maxLength + 1) + "...";
