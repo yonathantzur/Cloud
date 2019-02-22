@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
+import java.util.Date;
+
 public class TwitterListener {
     public static void main(String[] args) {
         // Create our twitter configuration
@@ -22,15 +24,18 @@ public class TwitterListener {
         TwitterStreamFactory tf = new TwitterStreamFactory(cb.build());
         TwitterStream twitterStream = tf.getInstance();
 
-
         twitterStream.addListener(new StatusListener() {
+            Date tweetDate = null;
+
             public void onException(Exception e) {
 
             }
 
             public void onStatus(Status status) {
                 // In case the tweet language is English.
-                if (status.getLang().equals("en")) {
+                if (isTimeoutOver(tweetDate) && status.getLang().equals("en")) {
+                    tweetDate = new Date();
+
                     // Getting url links in tweet.
                     URLEntity urls[] = status.getURLEntities();
 
@@ -65,6 +70,11 @@ public class TwitterListener {
 
             public void onStallWarning(StallWarning stallWarning) {
 
+            }
+
+            private boolean isTimeoutOver (Date tweetDate) {
+                return (tweetDate == null ||
+                        tweetDate.getTime() + Integer.parseInt(System.getProperty("tweets_stream_delay")) < new Date().getTime());
             }
         });
 
