@@ -11,14 +11,24 @@ import java.util.Date;
  */
 public class LinkExtractor {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    CloudWatch cw;
+
+    public LinkExtractor() {
+        cw = new CloudWatch();
+    }
 
     public ExtractedLink extractContent(String url) {
+        long startTime = System.nanoTime();
+        String screenshotURL = ScreenshotGenerator.takeScreenshot(url);
+        long endTime = (System.nanoTime() - startTime) / 1000000; // In millisecond
+        cw.SendMetric("screenshot_time", (double)endTime);
+
         return new ExtractedLink(url,
                 this.getWebTitle(url),
                 this.getWebContent(url),
                 this.getWebDescription(url),
                 format.format(new Date()),
-                ScreenshotGenerator.takeScreenshot(url),
+                screenshotURL,
                 System.getProperty("track"));
     }
 

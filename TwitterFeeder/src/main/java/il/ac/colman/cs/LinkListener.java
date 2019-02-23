@@ -5,6 +5,7 @@ import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.ReceiveMessageResult;
+import il.ac.colman.cs.util.CloudWatch;
 import il.ac.colman.cs.util.DataStorage;
 import il.ac.colman.cs.util.LinkExtractor;
 import twitter4j.JSONException;
@@ -16,6 +17,7 @@ public class LinkListener {
     public static void main(String[] args) throws SQLException, JSONException, ClassNotFoundException {
         // Connect to the database
         DataStorage dataStorage = new DataStorage();
+        CloudWatch cw = new CloudWatch();
 
         // Initiate our link extractor
         LinkExtractor linkExtractor = new LinkExtractor();
@@ -25,8 +27,8 @@ public class LinkListener {
         String queueUrl = System.getProperty("queue_url");
 
         ReceiveMessageRequest request = new ReceiveMessageRequest(queueUrl);
-        //request.setWaitTimeSeconds(5);
-        //request.setVisibilityTimeout(1);
+        request.setWaitTimeSeconds(3);
+        request.setVisibilityTimeout(1);
 
         ExtractedLink linkObj;
         ReceiveMessageResult result;
@@ -34,6 +36,7 @@ public class LinkListener {
 
         while (true) {
             result = client.receiveMessage(request);
+            cw.SendMetric("process_tweet", 1.0);
 
             for (Message message : result.getMessages()) {
                 dataJson = new JSONObject(message.getBody());

@@ -1,6 +1,7 @@
 package il.ac.colman.cs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import il.ac.colman.cs.util.CloudWatch;
 import il.ac.colman.cs.util.DataStorage;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -24,12 +25,15 @@ public class SearchResultsServer extends AbstractHandler {
     }
 
     private DataStorage storage;
+    private CloudWatch cw;
 
-    SearchResultsServer() throws SQLException, ClassNotFoundException {
+    SearchResultsServer() throws ClassNotFoundException {
         storage = new DataStorage();
+        cw = new CloudWatch();
     }
 
     public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        cw.SendMetric("search_tweet", 1.0);
         // Set the content type to JSON
         httpServletResponse.setContentType("application/json;charset=UTF-8");
 

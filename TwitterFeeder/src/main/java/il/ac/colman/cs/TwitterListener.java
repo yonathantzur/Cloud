@@ -5,6 +5,7 @@ import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import il.ac.colman.cs.util.CloudWatch;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -26,6 +27,7 @@ public class TwitterListener {
 
         twitterStream.addListener(new StatusListener() {
             Date tweetDate = null;
+            CloudWatch cw = new CloudWatch();
 
             public void onException(Exception e) {
 
@@ -35,6 +37,7 @@ public class TwitterListener {
                 // In case the tweet language is English.
                 if (isTimeoutOver(tweetDate) && status.getLang().equals("en")) {
                     tweetDate = new Date();
+                    cw.SendMetric("receive_tweet", 1.0);
 
                     // Getting url links in tweet.
                     URLEntity urls[] = status.getURLEntities();

@@ -20,7 +20,7 @@ nohup java -cp TwitterFeeder-1.0-SNAPSHOT-jar-with-dependencies.jar \
     -DTWITTER_ACCESS_TOKEN=1036263641132294144-7v85hiDTWTQ93R1qj2b2AoTSS10r13 \
     -DTWITTER_ACCESS_TOKEN_SECRET=5q3VYKMZbMH8EPy4Ao5eaiZHoSbHUZBvMJysElNGalwXm \
     -Dmax_links=1000 \
-    -Dtweets_stream_delay= 5000 \
+    -Dtweets_stream_delay=5000 \
     -Dtrack=apple \
     -Dqueue_url="https://sqs.us-east-1.amazonaws.com/135062767808/yonof" \
     -Ddb_connection="jdbc:mysql://yonof.cwn8zwzjkufz.us-east-1.rds.amazonaws.com:3306/yonof?user=yonof&password=Aa123456" \
