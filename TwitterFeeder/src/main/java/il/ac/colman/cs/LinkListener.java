@@ -27,7 +27,7 @@ public class LinkListener {
         String queueUrl = System.getProperty("queue_url");
 
         ReceiveMessageRequest request = new ReceiveMessageRequest(queueUrl);
-        request.setWaitTimeSeconds(3);
+        request.setWaitTimeSeconds(Integer.parseInt(System.getProperty("tweets_read_delay")) / 1000);
         request.setVisibilityTimeout(1);
 
         ExtractedLink linkObj;

@@ -19,14 +19,17 @@ public class DataStorage {
     }
 
     public void openConnection() throws SQLException {
-        conn = DriverManager.getConnection(url);
-        statement = conn.createStatement();
-        statement.setQueryTimeout(10);
+        if (conn == null || conn.isClosed()) {
+            conn = DriverManager.getConnection(url);
+            statement = conn.createStatement();
+            statement.setQueryTimeout(10);
+        }
     }
 
     public void closeConnection() throws SQLException {
-        statement = null;
-        conn.close();
+        if (!conn.isClosed()) {
+            conn.close();
+        }
     }
 
     /**
@@ -34,8 +37,8 @@ public class DataStorage {
      */
     public void addLink(ExtractedLink link, String track) throws SQLException {
         try {
-            int linksAmount = 0;
             this.openConnection();
+            int linksAmount = 0;
             ResultSet countResult = conn.prepareStatement("SELECT COUNT(*) FROM websites").executeQuery();
 
             while (countResult.next()) {
@@ -59,8 +62,9 @@ public class DataStorage {
             pstmt.setString(6, link.getScreenshotURL());
             pstmt.setString(7, track);
             pstmt.executeUpdate();
-        }
-        finally {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
             this.closeConnection();
         }
     }
@@ -72,12 +76,12 @@ public class DataStorage {
      */
     public List<ExtractedLink> search(String query) throws SQLException {
         try {
-            List<ExtractedLink> result = new ArrayList<ExtractedLink>();
+            this.openConnection();
+            List<ExtractedLink> result = new ArrayList<>();
 
-            String searchQuery = "SELECT * FROM websites WHERE title LIKE '%?%'";
+            String searchQuery = "SELECT * FROM websites WHERE title LIKE '%?%' ORDER BY tms DESC";
             searchQuery = searchQuery.replace("?", query);
 
-            this.openConnection();
             ResultSet queryResult = conn.prepareStatement(searchQuery).executeQuery();
 
             while (queryResult.next()) {
@@ -92,8 +96,10 @@ public class DataStorage {
             }
 
             return result;
-        }
-        finally {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        } finally {
             this.closeConnection();
         }
     }
