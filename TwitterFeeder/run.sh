@@ -8,8 +8,8 @@
 # ./run.sh TwitterListener
 
 # Configure AWS environment variable for SDK API
-export AWS_ACCESS_KEY_ID=AKIAJTFZ4PRBLK4QGNSA
-export AWS_SECRET_ACCESS_KEY=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
+export AWS_ACCESS_KEY_ID=AKIAJQPSNWPBOOSZNJUQ
+export AWS_SECRET_ACCESS_KEY=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
 export AWS_REGION=us-east-1
 
 # Run the java program with different main as user provided

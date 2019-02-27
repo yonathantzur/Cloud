@@ -11,10 +11,8 @@ import il.ac.colman.cs.util.LinkExtractor;
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
 
-import java.sql.SQLException;
-
 public class LinkListener {
-    public static void main(String[] args) throws SQLException, JSONException, ClassNotFoundException {
+    public static void main(String[] args) throws JSONException, ClassNotFoundException {
         // Connect to the database
         DataStorage dataStorage = new DataStorage();
         CloudWatch cw = new CloudWatch();

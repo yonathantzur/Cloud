@@ -11,19 +11,18 @@ import java.util.concurrent.TimeoutException;
 public class ScreenshotGenerator {
     final static String bucketName = "yonof";
     final static String s3Link = "https://s3.amazonaws.com/" + bucketName;
-    final static int timeout = 15000;
+    final static int timeout = 20000;
 
     public static String takeScreenshot(String url) {
         try {
             String screenshotFilePath;
             String imgName = UUID.randomUUID().toString() + ".png";
-            String screenshotCommand = "xvfb-run --error-file=screenshot/screenshot_error.txt --auto-servernum --server-num=1 wkhtmltoimage --format png --crop-w 1024 --crop-h 768 --quiet --quality 60 " + url + " screenshot/screenshot.png";
+            String screenshotCommand = "sudo xvfb-run --error-file=screenshot/screenshot_error.txt --auto-servernum --server-num=1 wkhtmltoimage --format png --crop-w 1024 --crop-h 768 --quiet --quality 60 " + url + " screenshot/screenshot.png";
             Process process = Runtime.getRuntime().exec(screenshotCommand);
-
             Worker worker = new Worker(process);
-            worker.start();
 
             try {
+                worker.start();
                 worker.join(timeout);
 
                 if (worker.exit == null) {
@@ -53,20 +52,5 @@ public class ScreenshotGenerator {
         }
     }
 
-    private static class Worker extends Thread {
-        private final Process process;
-        private Integer exit;
 
-        private Worker(Process process) {
-            this.process = process;
-        }
-
-        public void run() {
-            try {
-                exit = process.waitFor();
-            } catch (InterruptedException ignore) {
-                return;
-            }
-        }
-    }
 }

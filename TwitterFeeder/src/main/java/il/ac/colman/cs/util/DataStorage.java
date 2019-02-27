@@ -26,16 +26,10 @@ public class DataStorage {
         }
     }
 
-    public void closeConnection() throws SQLException {
-        if (!conn.isClosed()) {
-            conn.close();
-        }
-    }
-
     /**
      * Add link to the database
      */
-    public void addLink(ExtractedLink link, String track) throws SQLException {
+    public void addLink(ExtractedLink link, String track) {
         try {
             this.openConnection();
             int linksAmount = 0;
@@ -64,8 +58,6 @@ public class DataStorage {
             pstmt.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        } finally {
-            this.closeConnection();
         }
     }
 
@@ -74,7 +66,7 @@ public class DataStorage {
      *
      * @param query The query to search
      */
-    public List<ExtractedLink> search(String query) throws SQLException {
+    public List<ExtractedLink> search(String query) {
         try {
             this.openConnection();
             List<ExtractedLink> result = new ArrayList<>();
@@ -99,8 +91,6 @@ public class DataStorage {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
-        } finally {
-            this.closeConnection();
         }
     }
 

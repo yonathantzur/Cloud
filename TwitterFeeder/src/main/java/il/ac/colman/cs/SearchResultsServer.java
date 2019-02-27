@@ -51,7 +51,7 @@ public class SearchResultsServer extends AbstractHandler {
             }
 
             results = storage.search(searchQuery);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
