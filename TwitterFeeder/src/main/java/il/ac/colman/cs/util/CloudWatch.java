@@ -32,6 +32,7 @@ public class CloudWatch {
 
             return cw.putMetricData(request);
         } catch (Exception e) {
+            System.out.println("SendMetric - " + e.getMessage());
             return null;
         }
     }

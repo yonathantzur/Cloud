@@ -26,12 +26,22 @@ public class DataStorage {
         }
     }
 
+    public void closeConnection() {
+        try {
+            this.conn.close();
+        } catch (Exception e) {
+            return;
+        }
+    }
+
     /**
      * Add link to the database
      */
     public void addLink(ExtractedLink link, String track) {
         try {
             this.openConnection();
+
+            // Count entities on DB.
             int linksAmount = 0;
             ResultSet countResult = conn.prepareStatement("SELECT COUNT(*) FROM websites").executeQuery();
 
@@ -39,7 +49,7 @@ public class DataStorage {
                 linksAmount = countResult.getInt(1);
             }
 
-            // Delete the oldest link in case the DB is on max limit.
+            // Delete the oldest link in case the DB entities amount greater then max limit.
             if (linksAmount >= Integer.parseInt(System.getProperty("max_links"))) {
                 String deleteOldestQuery = "DELETE FROM websites ORDER BY tms ASC LIMIT 1";
                 conn.prepareStatement(deleteOldestQuery).executeUpdate();
@@ -57,7 +67,8 @@ public class DataStorage {
             pstmt.setString(7, track);
             pstmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("addLink - " + e.getMessage());
+            closeConnection();
         }
     }
 
@@ -89,7 +100,8 @@ public class DataStorage {
 
             return result;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("search - " + e.getMessage());
+            closeConnection();
             return null;
         }
     }

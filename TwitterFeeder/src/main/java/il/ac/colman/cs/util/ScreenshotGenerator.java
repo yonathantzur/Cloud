@@ -12,17 +12,20 @@ public class ScreenshotGenerator {
     final static String bucketName = "yonof";
     final static String s3Link = "https://s3.amazonaws.com/" + bucketName;
     final static int timeout = 20000;
+    static AmazonS3 client = AmazonS3ClientBuilder.defaultClient();
 
     public static String takeScreenshot(String url) {
         try {
             String screenshotFilePath;
             String imgName = UUID.randomUUID().toString() + ".png";
-            String screenshotCommand = "sudo xvfb-run --error-file=screenshot/screenshot_error.txt --auto-servernum --server-num=1 wkhtmltoimage --format png --crop-w 1024 --crop-h 768 --quiet --quality 60 " + url + " screenshot/screenshot.png";
+            String screenshotCommand = "xvfb-run --error-file=screenshot/screenshot_error.txt --auto-servernum wkhtmltoimage --format png --crop-w 1024 --crop-h 768 --quiet --quality 60 " + url + " screenshot/screenshot.png";
             Process process = Runtime.getRuntime().exec(screenshotCommand);
+
+            // Using worker to run the command process in order to set timeout to the process.
             Worker worker = new Worker(process);
+            worker.start();
 
             try {
-                worker.start();
                 worker.join(timeout);
 
                 if (worker.exit == null) {
@@ -38,7 +41,7 @@ public class ScreenshotGenerator {
             }
 
             // Configure our client
-            AmazonS3 client = AmazonS3ClientBuilder.defaultClient();
+            client = AmazonS3ClientBuilder.defaultClient();
             // Upload a file
             client.putObject(bucketName, imgName, new File("./screenshot/screenshot.png"));
             // Get the object URL
@@ -47,7 +50,8 @@ public class ScreenshotGenerator {
 
             return (s3Link + screenshotFilePath);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("takeScreenshot - " + e.getMessage());
+            client = AmazonS3ClientBuilder.defaultClient();
             return null;
         }
     }

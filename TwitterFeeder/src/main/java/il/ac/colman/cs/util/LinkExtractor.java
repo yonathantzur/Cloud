@@ -20,16 +20,22 @@ public class LinkExtractor {
     public ExtractedLink extractContent(String url) {
         long startTime = System.nanoTime();
         String screenshotURL = ScreenshotGenerator.takeScreenshot(url);
-        long endTime = (System.nanoTime() - startTime) / 1000000; // In millisecond
-        cw.SendMetric("screenshot_time", (double)endTime);
+        long endScreenshotTime = (System.nanoTime() - startTime) / 1000000; // In millisecond
+        cw.SendMetric("screenshot_time", (double)endScreenshotTime);
 
-        return new ExtractedLink(url,
+        ExtractedLink linkObj = new ExtractedLink(url,
                 this.getWebTitle(url),
                 this.getWebContent(url),
                 this.getWebDescription(url),
                 format.format(new Date()),
                 screenshotURL,
                 System.getProperty("track"));
+
+        long endLinkScanTime = (System.nanoTime() - startTime) / 1000000; // In millisecond
+
+        cw.SendMetric("process_tweet", (double)endLinkScanTime);
+
+        return linkObj;
     }
 
     private String getWebContent(String url) {

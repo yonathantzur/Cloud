@@ -28,6 +28,7 @@ public class TwitterListener {
         twitterStream.addListener(new StatusListener() {
             Date tweetDate = null;
             CloudWatch cw = new CloudWatch();
+            AmazonSQS client = AmazonSQSAsyncClientBuilder.defaultClient();
 
             public void onException(Exception e) {
 
@@ -35,7 +36,7 @@ public class TwitterListener {
 
             public void onStatus(Status status) {
                 // In case the tweet language is English.
-                if (isTimeoutOver(tweetDate) && status.getLang().equals("en")) {
+                if (isWaitTimeoutOver(tweetDate) && status.getLang().equals("en")) {
                     tweetDate = new Date();
                     cw.SendMetric("receive_tweet", 1.0);
 
@@ -43,17 +44,22 @@ public class TwitterListener {
                     URLEntity urls[] = status.getURLEntities();
 
                     if (urls.length > 0) {
-                        // Running on all tweet links.
-                        for (URLEntity url : urls) {
-                            ObjectMapper om = new ObjectMapper();
-                            JsonNode dataJson = om.createObjectNode();
+                        URLEntity url = urls[0];
+                        ObjectMapper om = new ObjectMapper();
+                        JsonNode dataJson = om.createObjectNode();
 
-                            ((ObjectNode) dataJson).put("link", url.getExpandedURL());
-                            ((ObjectNode) dataJson).put("track", System.getProperty("track"));
+                        // Build json to send to the queue.
+                        ((ObjectNode) dataJson).put("link", url.getExpandedURL());
+                        ((ObjectNode) dataJson).put("track", System.getProperty("track"));
 
-                            // Send data json to SQS.
-                            AmazonSQS client = AmazonSQSAsyncClientBuilder.defaultClient();
+                        try {
+                            // Send data as a json string to the SQS.
                             client.sendMessage(System.getProperty("queue_url"), dataJson.toString());
+                        }
+                        // Reconnect to the SQS client again in case of error.
+                        catch (Exception e) {
+                            System.out.println("onStatus - " + e.getMessage());
+                            client = AmazonSQSAsyncClientBuilder.defaultClient();
                         }
                     }
                 }
@@ -75,7 +81,8 @@ public class TwitterListener {
 
             }
 
-            private boolean isTimeoutOver (Date tweetDate) {
+            // Set timer interval to make the tweets stream slower.
+            private boolean isWaitTimeoutOver(Date tweetDate) {
                 return (tweetDate == null ||
                         tweetDate.getTime() + Integer.parseInt(System.getProperty("tweets_stream_delay")) < new Date().getTime());
             }
